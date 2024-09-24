@@ -34,3 +34,29 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+# Header Section 
+
+Here's how you can modify the explanation for a `README.md` file:
+
+---
+
+### How These Components Work Together
+
+#### 1. User Authentication:
+- When a user logs in via **Web3Auth**, the front-end (`Header` component) retrieves the user's information and stores it in the local state (`userInfo`).
+- If the user is logging in for the first time, their information (such as email) is sent to the backend through the `createUser()` function, which saves the user to the database.
+
+#### 2. Fetching User Notifications:
+- After a user logs in, the `Header` component’s second `useEffect` hook triggers. This calls the `getUserByEmail()` function to retrieve the logged-in user’s data from the database using their email.
+- Once the `user.id` is retrieved, the `getUnreadNotification()` function fetches any unread notifications associated with that user.
+- These notifications are then displayed in the header UI for the user.
+
+#### 3. UI Interaction:
+- The `Header` component is responsible for managing several user interactions, such as:
+  - Showing or hiding the dropdown menu.
+  - Displaying the user's notifications.
+  - Triggering the **Web3Auth** login modal for blockchain authentication.
+
+---

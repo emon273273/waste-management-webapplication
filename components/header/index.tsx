@@ -36,7 +36,11 @@ import {
 } from "@web3auth/base";
 import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
 import { Web3Auth, Web3AuthOptions } from "@web3auth/modal";
-import { createUser } from "@/utils/db/actions";
+import {
+  createUser,
+  getUnreadNotification,
+  getUserByEmail,
+} from "@/utils/db/actions";
 
 const clientId = process.env.WEB3_AUTH_CLIENT_ID;
 
@@ -77,6 +81,7 @@ export default function Header({ onMenuClick, totalEarning }: HeaderProps) {
   const [notification, setNotification] = useState<Notification[]>([]);
   const [balance, setBalance] = useState(0);
 
+  //initializes Web3Auth and sets the provider, checking if the user is connected and logged in.
   useEffect(() => {
     const init = async () => {
       try {
@@ -89,14 +94,57 @@ export default function Header({ onMenuClick, totalEarning }: HeaderProps) {
           setUserInfo(user);
           if (user.email) {
             localStorage.setItem("userEmail", user.email);
-            await createUser(user.email, user.name ||"anonymous user");
+            await createUser(user.email, user.name || "anonymous user");
           }
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
     init();
   }, []);
+
+  //unread notifications when the user is logged in (via their email). This runs every 30 seconds to check for new notifications.
+
+  useEffect(() => {
+    const fetchNotification = async () => {
+      if (userInfo && userInfo.email) {
+        const user = await getUserByEmail(userInfo.email);
+
+        if (user) {
+          const unreadNotifications = await getUnreadNotification(user.id);
+          setNotification(unreadNotifications);
+        }
+      }
+    };
+
+    fetchNotification();
+
+    //periodic checking for new notifications
+
+    const notificationInterval = setInterval(fetchNotification, 30000);
+
+    return () => clearInterval(notificationInterval);
+  }, [userInfo]);
+
+
+  //create a useeffect for fetch the user balance
+
+  useEffect(()=>{
+
+    const fetchUserBalance=async()=>{
+      if(userInfo && userInfo.email){
+        const user=await getUserByEmail(userInfo.email)
+
+        if(user){
+
+          const userBalance
+        }
+      }
+    }
+  })
+
 }
